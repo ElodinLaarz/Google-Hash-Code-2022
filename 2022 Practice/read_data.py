@@ -14,15 +14,14 @@ def scoring(people_dict, ingredient_list):
             score.append(person)
     return len(score)
 
-
-best_pizza = []
-best_pizza_score = 0
-
 file_names = ['a', 'b', 'c', 'd', 'e']
 
 for file_name in file_names:
 
-    for _ in range(1):
+    best_pizza = []
+    best_pizza_score = 0
+    
+    for _ in range(10):
         A = open(f'./input/{file_name}.in', 'r').readlines()
         n_people = int(A[0].strip())
         people_dict = dict()
@@ -109,5 +108,3 @@ for file_name in file_names:
                 
     with open(f'./output/{file_name}.out', 'w') as f:
         f.write(str(len(best_pizza)) + " " + " ".join(best_pizza))
-
-#     print(best_pizza_score)
