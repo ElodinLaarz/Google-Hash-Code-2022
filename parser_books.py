@@ -9,14 +9,16 @@ def arguments():
     parser.add_argument('--path', '-p', type=str, default=None)
     return parser.parse_args()
 
-class AuxiliaryClass:
-    def __init__(self, att1, att2):
-        self.att1 = att1
-        self.att2 = att2
+class GoogleLibrary:
+    def __init__(self, n_books, n_days, n_scans, books_ids):
+        self.n_books = n_books
+        self.N = self.n_books
+        self.n_days = n_days
+        self.T = self.n_days
+        self.n_scans = n_scans
+        self.M = self.n_scans
+        self.books_ids = set(books_ids)
     
-    def additional_function(self):
-        pass
-
     def __repr__(self):
         R = []
         for ele in inspect.getmembers(self):      
@@ -44,13 +46,13 @@ class Parser:
         # score of individual books.
         self.books_scores = [int(ele) for ele in self.content[1].split()] 
 
-        # next L lines
-        self.att_name = [] # or dict() or tuple()
-        for i in range(1, 1 + self.A):
-       
-        # next B lines
-        self.att_name = []
-        for i in range(1 + self.A, 1 + self.A + self.B):
+        # next 2L lines: Library description
+        self.libraries = []
+        for i in range(self.L):
+            lines_number = [2 + 2*i, 2 + 2*i + 1]
+            info = [int(ele) for ele in self.content[lines_number[0]]]
+            books_ids = [int(ele) for ele in self.content[lines_nnumber[1]]]
+            self.libraries.append(GoogleLibrary(info[0], info[1], info[2], books_ids))
         
     def print_dir(self):
         print(self.filename)
