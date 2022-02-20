@@ -50,13 +50,13 @@ class Parser:
             self.book_scores[book] = score
 
         # next 2L lines: Library description
-        self.libraries = []
+        self.libraries = dict()
         for i in range(self.L):
             lines_number = [2 + 2*i, 2 + 2*i + 1]
             info = [int(ele) for ele in self.content[lines_number[0]].split()]
             books_ids = [int(ele) for ele in self.content[lines_number[1]].split()]
-            self.libraries.append(GoogleLibrary(info[0], info[1], info[2], books_ids))
-        
+            self.libraries[i] = GoogleLibrary(info[0], info[1], info[2], books_ids)
+
     def print_dir(self):
         print(self.filename)
         D = {'methods': [], 'attributes': []}
