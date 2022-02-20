@@ -10,7 +10,7 @@ def arguments():
     return parser.parse_args()
 
 class GoogleLibrary:
-    def __init__(self, n_books, n_days, n_scans, books_ids):
+    def __init__(self, n_books, n_days, n_scans, books_ids, books_scores):
         self.n_books = n_books
         self.N = self.n_books
         self.n_days = n_days
@@ -18,6 +18,11 @@ class GoogleLibrary:
         self.n_scans = n_scans
         self.M = self.n_scans
         self.books_ids = set(books_ids)
+        self.total_score = 0
+        self.max_book_score = 0
+        for book in self.books_ids:
+            self.total_score += books_scores[book]
+            self.max_book_score = max([self.max_book_score, books_scores[book]])
     
     def __repr__(self):
         R = []
@@ -55,7 +60,7 @@ class Parser:
             lines_number = [2 + 2*i, 2 + 2*i + 1]
             info = [int(ele) for ele in self.content[lines_number[0]].split()]
             books_ids = [int(ele) for ele in self.content[lines_number[1]].split()]
-            self.libraries[i] = GoogleLibrary(info[0], info[1], info[2], books_ids)
+            self.libraries[i] = GoogleLibrary(info[0], info[1], info[2], books_ids, self.book_scores)
 
     def print_dir(self):
         print(self.filename)
