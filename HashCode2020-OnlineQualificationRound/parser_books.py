@@ -27,7 +27,6 @@ class GoogleLibrary:
                     R.append((ele[0], ele[1]))
         return str(R)
 
-
 class Parser:
     
     def __init__(self, filename):
@@ -43,15 +42,19 @@ class Parser:
         self.L = content[1]
         self.n_days = content[2]
         self.D = content[2]
+        
         # score of individual books.
-        self.books_scores = [int(ele) for ele in self.content[1].split()] 
+        books_scores = [int(ele) for ele in self.content[1].split()] 
+        self.book_scores = dict()
+        for book, score in enumerate(books_scores):
+            self.book_scores[book] = score
 
         # next 2L lines: Library description
         self.libraries = []
         for i in range(self.L):
             lines_number = [2 + 2*i, 2 + 2*i + 1]
-            info = [int(ele) for ele in self.content[lines_number[0]]]
-            books_ids = [int(ele) for ele in self.content[lines_nnumber[1]]]
+            info = [int(ele) for ele in self.content[lines_number[0]].split()]
+            books_ids = [int(ele) for ele in self.content[lines_number[1]].split()]
             self.libraries.append(GoogleLibrary(info[0], info[1], info[2], books_ids))
         
     def print_dir(self):
