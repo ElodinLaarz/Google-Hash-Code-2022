@@ -17,7 +17,10 @@ class GoogleLibrary:
         self.T = self.n_days
         self.n_scans = n_scans
         self.M = self.n_scans
-        self.books_ids = set(books_ids)
+        self.finish_scaning = False
+        # sorting books
+        books_ids.sort(key = lambda book: books_scores[book], reverse=True)
+        self.books_ids = books_ids
         self.total_score = 0
         self.max_book_score = 0
         for book in self.books_ids:
