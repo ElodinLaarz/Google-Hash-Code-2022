@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import itertools as it
-from HashCode.parser_books import Parser
+from parser_books import Parser
 
 @dataclass
 class LibrarySubmission:
