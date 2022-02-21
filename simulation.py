@@ -4,9 +4,9 @@ class Simulator():
   current_file : str
   solution : list
 
-  def __init__(self,total_time, parsed_objects, current_file):
-    self.time_remaining = total_time
+  def __init__(self, parsed_objects, current_file):
     self.objects_of_note = parsed_objects
+    self.time_remaining = parsed_objects.time
     self.current_file = current_file
 
   # Generic function for each time step
