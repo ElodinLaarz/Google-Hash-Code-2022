@@ -1,6 +1,6 @@
 class Simulator():
-  time_remaining : int
   objects_of_note : list
+  time_remaining : int
   current_file : str
   solution : list
 
