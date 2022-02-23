@@ -1,4 +1,21 @@
+"""
+Goal of this simulator is to see what are the bounds on how fast a
+task can be completed.
+
+We do this by first answering the following:
+    Using all available servers, how long does it take?
+Then, we see how long it takes with s-1 servers, s-2, etc. until
+either the task is completed with 1 server or the the task is impossiblewith the given number of servers.
+
+There is a bit of choice that we make when assigning the servers, but
+we take a 'greedy' sort of approach where a server chooses to compile whatever necessary task is available that is currently going to take the longest amount of t
+"""
+from collections import deque
+
+
 class Simulator():
+
+    
     objects_of_note : list
     time_remaining : int
     current_file : str
@@ -13,9 +30,28 @@ class Simulator():
         self.compiled_files = parsed_obects.compiled_files
         self.servers = parsed_objects.servers
 
+    def generate_task_requisities(self,task_name):
+        requisites = []
+        # Essentially BFS
+        
+        visited = {}
+        for name in self.compiled_files:
+            visited[name] = False
+
+        remaining_files = deque()
+        remaining_files.append(task_name)
+
+        while remaining_files:
+            cur_file = remaining_files.pop(0)
+            requisites.append(cur_file)
+            remaining_files += self.compiled_files[cur_file].dependencies
+        
+
+        return requisites[::-1]
+
+
     # Generic function for each time step
     def choice(self):
-        # Choose what to do at some time increment
         return
 
     def update_solution(self):
