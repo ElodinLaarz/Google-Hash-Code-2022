@@ -44,6 +44,9 @@ class Scorer:
             if books_sent > 0 and not library in seen:
                 seen.add(library)
                 books = list(map(int, data[i+1].split(' ')))
+               # print(sorted(books), sorted(list(set(books))))
+                if sorted(books) != sorted(list(set(books))):
+                    raise ValueError(f'Duplicate books in library {library}')
                 submission.append(LibrarySubmission(library, books_sent, books))
         
         dr = self.A.D
