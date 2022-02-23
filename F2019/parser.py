@@ -74,8 +74,8 @@ class Parser:
             self.compiled_files[name] = compiled_file            
 
         # next T lines
-        for i in range(T):
-            name, deadline, goal_points = self.content[2 * C + 1 + i].split()
+        for i in range(self.T):
+            name, deadline, goal_points = self.content[2 * self.C + 1 + i].split()
             self.compiled_files[name].TARGET_FILE = True
             self.compiled_files[name].DEADLINE = int(deadline)
             self.compiled_files[name].GOAL_POINTS = int(goal_points)
