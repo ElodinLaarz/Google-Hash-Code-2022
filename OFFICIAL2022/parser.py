@@ -1,12 +1,6 @@
 import inspect
 import os
 
-def arguments():
-    parser = argparse.ArgumentParser(description='Get(s) the path to input files')
-    parser.add_argument('--root', '-r', type=str, default=None)
-    parser.add_argument('--path', '-p', type=str, default=None)
-    return parser.parse_args()
-
 class AuxiliaryClass:
     def __init__(self, att1, att2):
         self.att1 = att1
@@ -66,5 +60,3 @@ class Parser:
                     D['methods'].append(ele[0])
         for key in D:
             print(key, D[key])
-
-
