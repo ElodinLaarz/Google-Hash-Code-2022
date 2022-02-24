@@ -11,6 +11,16 @@ class Submission:
     best_before: int
     max_score: int
     context: Project
+    all_contributors: list
+
+    def get_contributor_details(self) -> dict:
+        contribs = {}
+        for person in self.people_assigned:
+            for contributor in self.all_contributors:
+                if person == contributor.name:
+                    contribs[person] = contributor
+        return contribs
+
 
     def get_new_contributors(self) -> set:
         need_to_check = set(self.people_assigned)
@@ -30,9 +40,29 @@ class Submission:
             #print(need_to_check)
             return False
         return True
+    
+    def level_up(self) -> dict:
+        details = self.get_contributor_details()
+        for project in self.past_submissions[::-1]:
+            for person in self.people_assigned:
+                if person in project.people_assigned:
+                    person_skills = details[person].skills
+                    job_skills = dict(project.context.roles)
+                    skill_to_upgrade = (person_skills.keys()&job_skills.keys()).pop()
+                    skill_diff = person_skills[skill_to_upgrade] - job_skills[skill_to_upgrade]
+                    if skill_diff == 0 or skill_diff == -1:
+                        details[person].skills[skill_to_upgrade] += 1
+        return details
 
     def is_everyone_leveled(self) -> bool:
-        return True
+        details = self.level_up()
+        failed = False
+        for role, person in zip(self.context.roles, self.people_assigned):
+            #print(details[person].skills[role[0]])
+            #print(self.project_name, person, role[0], details[person].skills[role[0]], role[1])
+            if not (details[person].skills[role[0]] >= role[1]-1):
+                failed = True
+        return not failed
     
     def day_start(self) -> None:
         while not self.is_everyone_available():
@@ -62,6 +92,7 @@ class Scorer:
         with open(self.output,'r') as fp:
             data = [x.strip() for x in fp.readlines() if x]
         num_projects = data.pop(0)
+        all_contributors = self.A.contributors
         submissions = []
         score = 0
         for i in range(0, len(data), 2):
@@ -74,8 +105,9 @@ class Scorer:
                     max_score = p.score
                     project_context = p
             
-            submission = Submission(project_name, submissions[::-1], contributors.split(' '), day, days_to_complete, best_before, max_score, project_context)
+            submission = Submission(project_name, submissions[::-1], contributors.split(' '), day, days_to_complete, best_before, max_score, project_context, all_contributors)
             #print(submission)
             score += submission.score()
             submissions.append(submission)
         return score
+        
