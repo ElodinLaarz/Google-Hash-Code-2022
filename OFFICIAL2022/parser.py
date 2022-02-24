@@ -16,8 +16,6 @@ class Contributor:
                     R.append((ele[0], ele[1]))
         return str(R)
 
-
-
 class Project:
     def __init__(self, name, duration, score, best_before, n_roles, roles):
         self.name = name
@@ -34,7 +32,6 @@ class Project:
                 if not inspect.ismethod(ele[1]): 
                     R.append((ele[0], ele[1]))
         return str(R)
-
 
 class Parser: 
     def __init__(self, filename):
@@ -60,7 +57,6 @@ class Parser:
             # line = cc + 1 
             name = self.content[cc + 1].split()[0]
             n_skills = int(self.content[cc + 1].split()[1])
-            print(name, n_skills)
             skills = dict()
             for j in range(n_skills):
                 # line = cc + 2 + j
@@ -71,15 +67,22 @@ class Parser:
             
             cc += 1 + n_skills
             self.contributors.append(Contributor(name, n_skills, skills))
-        
+        self.contributors_dict = {cont.name: cont for cont in self.contributors} 
+
         self.skills = sorted(list(set(self.skills)))
+
+        self.skills_dict = dict()
+        for skill in self.skills:
+            self.skills_dict[skill] = []
+            for cont in self.contributors:
+                if skill in cont.skills:
+                    self.skills_dict[skill].append((cont.name, cont.skills[skill]))
         
         # next 2*P lines
         self.projects = []
         for i in range(self.P):
             # line = cc + 1
             content = self.content[cc + 1].split()
-            print(content, cc + 1)
             name = content[0]
             duration = int(content[1])
             score = int(content[2])
@@ -95,6 +98,8 @@ class Parser:
             self.projects.append(Project(
                 name, duration, score, best_before, n_roles, roles))
 
+        self.projects_dict = {proj.name: proj for proj in self.projects}
+
     def max_required(self):
         self.initial_fails = dict()
         for skill in self.skills:
@@ -104,14 +109,32 @@ class Parser:
                     best = max([best, cont.skills[skill]])
             initial_fails = []
             for proj in self.projects:
+                project_initial_fails = []
                 for req_skill, req_level in proj.roles:
                     if req_skill == skill:
                         if req_level > best:
                             initial_fails.append((proj, skill, req_level))
-            print(
-                f"For skill {skill}: best contrib has {best}. "
-                f"There are {len(initial_fails)} projects with larger demand.")
+                            project_initial_fails.append((skill, req_level))
+                setattr(proj, 'initial_fails', project_initial_fails)
+                setattr(proj, 'n_initial_fails', len(project_initial_fails))
             self.initial_fails[skill] = initial_fails
+
+    def sort_projects(self):
+        self.max_required()
+        projects = [
+            (
+                proj.name,
+                proj.n_initial_fails,
+                proj.n_roles,
+                proj.score + proj.best_before,
+                proj.score
+            )
+            for proj in self.projects
+        ]
+        projects.sort(key = lambda x: x[1] * 10**12 + x[2] * 10**6 + x[3])
+        self.sorted_projects = projects
+        return projects
+
 
 
     def print_dir(self):
