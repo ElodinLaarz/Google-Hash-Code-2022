@@ -35,13 +35,10 @@ class Project:
         return str(R)
 
 
-class Parser:
-    
+class Parser: 
     def __init__(self, filename):
         self.filename = filename
         self.content = open(filename, 'r').readlines()
-        for i in range(len(self.content)):
-            print(i, self.content[i].strip())
         self.parse()
 
     def parse(self):
@@ -87,12 +84,12 @@ class Parser:
             score = int(content[2])
             best_before = int(content[3])
             n_roles = int(content[4])
-            roles = {}
+            roles = []
             for j in range(n_roles):
                 # line = cc + 2 + j
                 skill = self.content[cc + 2 + j].split()[0]
                 level = int(self.content[cc + 2 + j].split()[1])
-                roles[skill] = level
+                roles.append((skill, level))
             cc += 1 + n_roles
             self.projects.append(Project(
                 name, duration, score, best_before, n_roles, roles))
