@@ -1,5 +1,6 @@
 import inspect
 import os
+from collections import defaultdict
 
 class Contributor:
     def __init__(self, name, n_skills, skills):
