@@ -48,7 +48,7 @@ class Submission:
                 if person in project.people_assigned:
                     person_skills = details[person].skills
                     job_skills = dict(project.context.roles)
-                    skill_to_upgrade = (person_skills.keys()&job_skills.keys()).pop()
+                    skill_to_upgrade = project.context.roles[project.people_assigned.index(person)][0] #just in case a person has multiple skills usable in the same project, but is assigned to one
                     skill_diff = person_skills[skill_to_upgrade] - job_skills[skill_to_upgrade]
                     if skill_diff == 0 or skill_diff == -1:
                         details[person].skills[skill_to_upgrade] += 1
