@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
         current_simulation.create_output()
 
-        scoring = Score('./outputs/' + prefix + '.out', p)
+        scoring = Score('./outputs/' + prefix + '.out', './inputs/' + prefix + '.in', p)
         cur_score = scoring.score()
 
         with open('./scores/' + prefix + '.score', 'r') as f:
