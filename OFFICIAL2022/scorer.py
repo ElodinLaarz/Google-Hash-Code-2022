@@ -12,6 +12,7 @@ class Submission:
     max_score: int
     context: Project
     all_contributors: list
+    msg: bool = True
 
     def get_contributor_details(self) -> dict:
         contribs = {}
@@ -56,24 +57,27 @@ class Submission:
 
     def is_everyone_leveled(self) -> bool:
         details = self.level_up()
-        failed = False
         for role, person in zip(self.context.roles, self.people_assigned):
             if not (details[person].skills[role[0]] >= role[1]-1):
-                failed = True
+                if self.msg:
+                    raise ValueError(f'Contributors in project {self.project_name} not leveled enough')
+                return False
             if details[person].skills[role[0]] == role[1]-1:
                 if all([(details[other_person].skills.get(role[0],0) < role[1]) for other_person in self.people_assigned if person != other_person]):
-                    failed = True
-        return not failed
+                    if self.msg:
+                        raise ValueError(f'{person} in project {self.project_name} not leveled enough in {role[0]} [Needed Level {role[1]}, Had Level {details[person].skills[role[0]]}]')
+                    return False
+        return True
     
     def day_start(self) -> None:
         while not self.is_everyone_available():
             self.day += 1
-        if not self.is_everyone_leveled():
-            raise ValueError(f'Contributors in project {self.project_name} not levelled enough')
 
     def get_day_completed(self) -> int:
-        self.day_start()
-        self.day_completed = self.day + self.days_to_complete
+        self.day_completed = self.best_before
+        if self.is_everyone_leveled():
+            self.day_start()
+            self.day_completed = self.day + self.days_to_complete
         return self.day_completed
     
     def penalty(self) -> int:
