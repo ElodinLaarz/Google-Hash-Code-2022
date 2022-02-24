@@ -1,7 +1,5 @@
-import argparse
 import inspect
 import os
-import pickle
 
 def arguments():
     parser = argparse.ArgumentParser(description='Get(s) the path to input files')
@@ -39,6 +37,8 @@ class Parser:
         self.att_var0 = content[0]
         self.att_name1 = content[1]
         self.att_var1 = content[1]       
+
+
         # next A lines
         self.att_name = [] # or dict() or tuple()
         for i in range(1, 1 + self.A):
@@ -67,19 +67,4 @@ class Parser:
         for key in D:
             print(key, D[key])
 
-if __name__ == '__main__':
-    args = arguments()
-    if args.root[-1] != '/':
-        args.root += '/'
-    if args.path[-1] != '/':
-        args.path += '/'
-    dirname = args.root + args.path
-    files = [
-        dirname + fn for fn in os.listdir(dirname)
-        if fn.endswith('.txt')]
-    for fn in files:
-        eg = Parser(fn)
-        eg.parse()
-        pickle.dump(eg, open(fn.replace('.txt', '.pkl'), 'wb'))
-    
-    eg.print_dir()
+
