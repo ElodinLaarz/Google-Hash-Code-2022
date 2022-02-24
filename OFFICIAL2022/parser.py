@@ -95,6 +95,25 @@ class Parser:
             self.projects.append(Project(
                 name, duration, score, best_before, n_roles, roles))
 
+    def max_required(self):
+        self.initial_fails = dict()
+        for skill in self.skills:
+            best = 0
+            for cont in self.contributors:
+                if skill in cont.skills:
+                    best = max([best, cont.skills[skill]])
+            initial_fails = []
+            for proj in self.projects:
+                for req_skill, req_level in proj.roles:
+                    if req_skill == skill:
+                        if req_level > best:
+                            initial_fails.append((proj, skill, req_level))
+            print(
+                f"For skill {skill}: best contrib has {best}. "
+                f"There are {len(initial_fails)} projects with larger demand.")
+            self.initial_fails[skill] = initial_fails
+
+
     def print_dir(self):
         print(self.filename)
         D = {'methods': [], 'attributes': []}
