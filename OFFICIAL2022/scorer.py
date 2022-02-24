@@ -21,7 +21,6 @@ class Submission:
                     contribs[person] = contributor
         return contribs
 
-
     def get_new_contributors(self) -> set:
         need_to_check = set(self.people_assigned)
         for project in self.past_submissions:
@@ -31,11 +30,12 @@ class Submission:
     def is_everyone_available(self) -> bool:
         need_to_check = set(self.people_assigned)
         need_to_check -= self.get_new_contributors()
+        people_seen = set()
         for project in self.past_submissions:
-            #print(project.day_completed, self.day)
             if project.day_completed <= self.day:
                 #print(project.people_assigned,'BBBB')
-                need_to_check -= set(project.people_assigned)
+                need_to_check -= (set(project.people_assigned) - people_seen)
+            people_seen = people_seen | set(project.people_assigned)
         if len(need_to_check) > 0:
             #print(need_to_check)
             return False
@@ -58,8 +58,6 @@ class Submission:
         details = self.level_up()
         failed = False
         for role, person in zip(self.context.roles, self.people_assigned):
-            #print(details[person].skills[role[0]])
-            #print(self.project_name, person, role[0], details[person].skills[role[0]], role[1])
             if not (details[person].skills[role[0]] >= role[1]-1):
                 failed = True
         return not failed
@@ -80,6 +78,7 @@ class Submission:
         return max(day_completed - self.best_before, 0)
     
     def score(self) -> int:
+        #print(f'penalty: {self.penalty()} day completed: {self.day_completed} best before: {self.best_before}')
         return max(self.max_score - self.penalty(), 0)
 
 class Scorer:
