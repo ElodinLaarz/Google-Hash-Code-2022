@@ -71,12 +71,10 @@ class Parser:
 
         self.skills = sorted(list(set(self.skills)))
 
-        self.skills_dict = dict()
-        for skill in self.skills:
-            self.skills_dict[skill] = []
-            for cont in self.contributors:
-                if skill in cont.skills:
-                    self.skills_dict[skill].append((cont.name, cont.skills[skill]))
+        self.skills_dict = {skill: [] for skill in self.skills}
+        for cont in self.contributors:
+            for skill in cont.skills:
+                self.skills_dict[skill].append(cont)
         
         # next 2*P lines
         self.projects = []
