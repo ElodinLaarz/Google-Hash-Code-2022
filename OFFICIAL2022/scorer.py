@@ -89,7 +89,7 @@ class Submission:
         return max(self.max_score - self.penalty(), 0)
 
 class Scorer:
-    def __init__(self, output_file, input_file):
+    def __init__(self, output_file='', input_file=''):
         self.input = input_file
         self.output = output_file
         self.A = Parser(self.input)
@@ -112,8 +112,6 @@ class Scorer:
                     project_context = p
             
             submission = Submission(project_name, submissions[::-1], contributors.split(' '), day, days_to_complete, best_before, max_score, project_context, all_contributors)
-            #print(submission)
             score += submission.score()
             submissions.append(submission)
-        return score
-        
+        return score        
