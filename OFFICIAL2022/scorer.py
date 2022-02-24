@@ -60,6 +60,9 @@ class Submission:
         for role, person in zip(self.context.roles, self.people_assigned):
             if not (details[person].skills[role[0]] >= role[1]-1):
                 failed = True
+            if details[person].skills[role[0]] == role[1]-1:
+                if all([(details[other_person].skills.get(role[0],0) < role[1]) for other_person in self.people_assigned if person != other_person]):
+                    failed = True
         return not failed
     
     def day_start(self) -> None:
