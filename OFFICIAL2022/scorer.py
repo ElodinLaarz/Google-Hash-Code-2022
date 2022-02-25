@@ -77,7 +77,7 @@ class Submission:
             self.day += 1
 
     def get_day_completed(self) -> int:
-        self.day_completed = self.best_before
+        self.day_completed = self.best_before + self.max_score
         if self.is_everyone_leveled():
             self.day_start()
             self.day_completed = self.day + self.days_to_complete
