@@ -1,18 +1,21 @@
-from dataclasses import dataclass
-from parser import Parser, Project
+from parser import Parser
 
-@dataclass
 class Submission:
-    project_name: str
-    past_submissions: list
-    people_assigned: list
-    day: int
-    days_to_complete: int
-    best_before: int
-    max_score: int
-    context: Project
-    all_contributors: list
-    msg: bool = True
+    def __init__(self, project_name: str, contributors: list, submissions: list, parser: Parser, day: int = 0, msg: bool = True) -> None:
+        self.parser = parser
+        for project_context in self.parser.projects:
+            if project_context.name == project_name:
+                self.context = project_context
+
+        self.project_name = project_name
+        self.past_submissions = submissions[::-1]
+        self.people_assigned = contributors
+        self.day = day
+        self.days_to_complete = self.context.duration
+        self.best_before = self.context.best_before
+        self.max_score = self.context.score
+        self.all_contributors = self.parser.contributors
+        self.msg = msg
 
     def get_contributor_details(self) -> dict:
         contribs = {}
@@ -92,26 +95,23 @@ class Scorer:
     def __init__(self, output_file='', input_file=''):
         self.input = input_file
         self.output = output_file
-        self.A = Parser(self.input)
+        self.parser = Parser(self.input)
     
     def score(self):
         with open(self.output,'r') as fp:
             data = [x.strip() for x in fp.readlines() if x]
         num_projects = data.pop(0)
-        all_contributors = self.A.contributors
         submissions = []
         score = 0
         for i in range(0, len(data), 2):
             project_name, contributors = data[i:i+2]
-            for p in self.A.projects:
-                if p.name == project_name:
-                    days_to_complete = p.duration
-                    day = 0
-                    best_before = p.best_before
-                    max_score = p.score
-                    project_context = p
-            
-            submission = Submission(project_name, submissions[::-1], contributors.split(' '), day, days_to_complete, best_before, max_score, project_context, all_contributors)
+            contributors = contributors.split(' ')
+            submission = Submission(project_name, contributors, submissions, self.parser)
             score += submission.score()
             submissions.append(submission)
-        return score        
+        return score
+
+if __name__ == '__main__':
+    file_letter = 'a'
+    S = Scorer(f'./outputs/{file_letter}.out', f'./inputs/{file_letter}.in')
+    print(S.score())
