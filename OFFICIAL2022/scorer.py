@@ -1,21 +1,24 @@
 from parser import Parser
 
 class Submission:
-    def __init__(self, project_name: str, contributors: list, submissions: list, parser: Parser, day: int = 0, msg: bool = True) -> None:
+    def __init__(self, project_name: str, people_assigned: list, past_submissions: list, parser: Parser, day: int = 0, msg: bool = True) -> None:
         self.parser = parser
         for project_context in self.parser.projects:
             if project_context.name == project_name:
                 self.context = project_context
 
         self.project_name = project_name
-        self.past_submissions = submissions[::-1]
-        self.people_assigned = contributors
+        self.past_submissions = past_submissions[::-1]
+        self.people_assigned = people_assigned
         self.day = day
         self.days_to_complete = self.context.duration
         self.best_before = self.context.best_before
         self.max_score = self.context.score
         self.all_contributors = self.parser.contributors
         self.msg = msg
+    
+    def __str__(self) -> str:
+        return f'Submission(project_name = "{self.project_name}", people_assigned = {self.people_assigned}, past_submissions = {self.past_submissions}, day = {self.day})'
 
     def get_contributor_details(self) -> dict:
         contribs = {}
@@ -101,14 +104,15 @@ class Scorer:
         with open(self.output,'r') as fp:
             data = [x.strip() for x in fp.readlines() if x]
         num_projects = data.pop(0)
-        submissions = []
+        past_submissions = []
         score = 0
         for i in range(0, len(data), 2):
-            project_name, contributors = data[i:i+2]
-            contributors = contributors.split(' ')
-            submission = Submission(project_name, contributors, submissions, self.parser)
+            project_name, people_assigned = data[i:i+2]
+            people_assigned = people_assigned.split(' ')
+            submission = Submission(project_name, people_assigned, past_submissions, self.parser)
+            print(submission)
             score += submission.score()
-            submissions.append(submission)
+            past_submissions.append(submission)
         return score
 
 if __name__ == '__main__':
