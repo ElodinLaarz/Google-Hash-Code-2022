@@ -1,4 +1,4 @@
-from parser import Parser
+from gz_parser.parser import Parser
 
 class Submission:
     def __init__(self, project_name: str, people_assigned: list, past_submissions: list, parser: Parser, day: int = 0, msg: bool = True) -> None:
