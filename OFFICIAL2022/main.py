@@ -1,8 +1,8 @@
 import shutil
 
 from simulation import Simulator
-from parser import Parser
-from scorer import Score
+from gz_parser.parser import Parser
+from scorer import Submission
 
 
 if __name__ == '__main__':
@@ -14,14 +14,15 @@ if __name__ == '__main__':
     for prefix in file_prefixes:
         p = Parser('./inputs/' + prefix + '.in')
 
-        current_simulation = Simulator(p.data(), prefix)
+        current_simulation = Simulator(p, prefix)
 
-        while (current_simulation.time_remaining > 0):
+        while (not current_simulation.done):
             current_simulation.time_step()
 
         current_simulation.create_output()
 
-        scoring = Score('./outputs/' + prefix + '.out', './inputs/' + prefix + '.in', p)
+        # I don't understand Sharat's submission please help.
+        # scoring = Submission('./outputs/' + prefix + '.out', './inputs/' + prefix + '.in', p)
         cur_score = scoring.score()
 
         with open('./scores/' + prefix + '.score', 'r') as f:
